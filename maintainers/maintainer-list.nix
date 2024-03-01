@@ -5648,6 +5648,12 @@
     githubId = 2536303;
     name = "Enno Lohmeier";
   };
+  elrohirgt = {
+    email = "elrohirgt@gmail.com";
+    github = "ElrohirGT";
+    githubId = 45268815;
+    name = "Flavio Galán";
+  };
   elvishjerricco = {
     email = "elvishjerricco@gmail.com";
     matrix = "@elvishjerricco:matrix.org";
