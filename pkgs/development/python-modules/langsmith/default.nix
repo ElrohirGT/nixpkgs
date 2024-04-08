@@ -1,21 +1,22 @@
-{ lib
-, attr
-, buildPythonPackage
-, fetchFromGitHub
-, freezegun
-, orjson
-, poetry-core
-, pydantic
-, pytest-asyncio
-, pytestCheckHook
-, pythonOlder
-, pythonRelaxDepsHook
-, requests
+{
+  lib,
+  attr,
+  buildPythonPackage,
+  fetchFromGitHub,
+  freezegun,
+  orjson,
+  poetry-core,
+  pydantic,
+  pytest-asyncio,
+  pytestCheckHook,
+  pythonOlder,
+  pythonRelaxDepsHook,
+  requests,
 }:
 
 buildPythonPackage rec {
   pname = "langsmith";
-  version = "0.1.10";
+  version = "0.1.40";
   pyproject = true;
 
   disabled = pythonOlder "3.8";
@@ -24,21 +25,19 @@ buildPythonPackage rec {
     owner = "langchain-ai";
     repo = "langsmith-sdk";
     rev = "refs/tags/v${version}";
-    hash = "sha256-9My/0DPN6AwAFoAiTdl6jd2GtX4fpFIgpnZe/WzAi9c=";
+    hash = "sha256-LdHCTPFrIhIOWV4m9pJx7GWQX1Xs6ajaXMgPFO+JQ8w=";
   };
 
   sourceRoot = "${src.name}/python";
 
-  pythonRelaxDeps = [
-    "orjson"
-  ];
+  pythonRelaxDeps = [ "orjson" ];
 
-  nativeBuildInputs = [
+  build-system = [
     poetry-core
     pythonRelaxDepsHook
   ];
 
-  propagatedBuildInputs = [
+  dependencies = [
     orjson
     pydantic
     requests
@@ -59,7 +58,7 @@ buildPythonPackage rec {
     "test_as_runnable_batch"
     "test_as_runnable_async"
     "test_as_runnable_async_batch"
-    # requires git repo
+    # Test requires git repo
     "test_git_info"
     # Tests require OpenAI API key
     "test_chat_async_api"
@@ -74,9 +73,7 @@ buildPythonPackage rec {
     "tests/unit_tests/test_client.py"
   ];
 
-  pythonImportsCheck = [
-    "langsmith"
-  ];
+  pythonImportsCheck = [ "langsmith" ];
 
   __darwinAllowLocalNetworking = true;
 
@@ -86,5 +83,6 @@ buildPythonPackage rec {
     changelog = "https://github.com/langchain-ai/langsmith-sdk/releases/tag/v${version}";
     license = licenses.mit;
     maintainers = with maintainers; [ natsukium ];
+    mainProgram = "langsmith";
   };
 }

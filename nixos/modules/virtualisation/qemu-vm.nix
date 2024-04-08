@@ -186,7 +186,7 @@ let
         NIX_EFI_VARS=$(readlink -f "''${NIX_EFI_VARS:-${config.system.name}-efi-vars.fd}")
         # VM needs writable EFI vars
         if ! test -e "$NIX_EFI_VARS"; then
-        ${if cfg.useBootLoader then
+        ${if cfg.efi.keepVariables then
             # We still need the EFI var from the make-disk-image derivation
             # because our "switch-to-configuration" process might
             # write into it and we want to keep this data.
@@ -877,11 +877,9 @@ in
         type = types.package;
         default = (pkgs.OVMF.override {
           secureBoot = cfg.useSecureBoot;
-          systemManagementModeRequired = cfg.useSecureBoot;
         }).fd;
         defaultText = ''(pkgs.OVMF.override {
           secureBoot = cfg.useSecureBoot;
-          systemManagementModeRequired = cfg.useSecureBoot;
         }).fd'';
         description =
         lib.mdDoc "OVMF firmware package, defaults to OVMF configured with secure boot if needed.";
@@ -906,6 +904,13 @@ in
             Platform-specific flash binary for EFI variables, implementation-dependent to the EFI firmware.
             Defaults to OVMF.
           '';
+      };
+
+      keepVariables = mkOption {
+        type = types.bool;
+        default = cfg.useBootLoader;
+        defaultText = literalExpression "cfg.useBootLoader";
+        description = "Whether to keep EFI variable values from the generated system image";
       };
     };
 
@@ -1185,7 +1190,7 @@ in
         "-tpmdev emulator,id=tpm_dev_0,chardev=chrtpm"
         "-device ${cfg.tpm.deviceModel},tpmdev=tpm_dev_0"
       ])
-      (mkIf (cfg.efi.OVMF.systemManagementModeRequired or false) [
+      (mkIf (pkgs.stdenv.hostPlatform.isx86 && cfg.efi.OVMF.systemManagementModeRequired) [
         "-machine" "q35,smm=on"
         "-global" "driver=cfi.pflash01,property=secure,value=on"
       ])

@@ -2,13 +2,13 @@
 
 stdenv.mkDerivation rec {
   pname = "signalbackup-tools";
-  version = "20240225";
+  version = "20240406";
 
   src = fetchFromGitHub {
     owner = "bepaald";
     repo = pname;
     rev = version;
-    hash = "sha256-V02ZaBQQ1KgCCFCNxr52BSXowf4p1mHo5IrSjsawiY4=";
+    hash = "sha256-Yc6QlEtN73zy3onckxC80QOmSrW5MPn4+rnWE7WEPug=";
   };
 
   postPatch = ''
@@ -32,6 +32,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "Tool to work with Signal Backup files";
+    mainProgram = "signalbackup-tools";
     homepage = "https://github.com/bepaald/signalbackup-tools";
     license = licenses.gpl3Only;
     maintainers = [ maintainers.malo ];

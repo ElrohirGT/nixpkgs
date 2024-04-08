@@ -6,12 +6,13 @@
 , lxml
 , pytestCheckHook
 , pythonOlder
+, setuptools
 }:
 
 buildPythonPackage rec {
   pname = "xmlschema";
-  version = "3.0.1";
-  format = "setuptools";
+  version = "3.2.1";
+  pyproject = true;
 
   disabled = pythonOlder "3.7";
 
@@ -19,8 +20,12 @@ buildPythonPackage rec {
     owner = "sissaschool";
     repo = "xmlschema";
     rev = "refs/tags/v${version}";
-    hash = "sha256-7gko4BFbTnQ+MpSQiGVaAldZcb1X16hinXaHg+nvPgs=";
+    hash = "sha256-jhof4C/jbMcvBRTLFdeFq2+ZucoDhbdcLE9IWvgzN0Y=";
   };
+
+  nativeBuildInputs = [
+    setuptools
+  ];
 
   propagatedBuildInputs = [
     elementpath

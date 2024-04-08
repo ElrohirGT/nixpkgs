@@ -10,13 +10,13 @@
 
 buildPythonPackage rec {
   pname = "sphinxcontrib-confluencebuilder";
-  version = "2.4.0";
+  version = "2.5.0";
   format = "pyproject";
 
   src = fetchPypi {
     pname = "sphinxcontrib_confluencebuilder";
     inherit version;
-    hash = "sha256-q3+GwMVWMRu4eWwbdXcbPQzpBhBXcZEMFTpbEO+teLk=";
+    hash = "sha256-rE9tWUie9ZaeWnKR+ojwS9A6BHEtsgVpwzXAuWoxknQ=";
   };
 
   nativeBuildInputs = [
@@ -41,6 +41,7 @@ buildPythonPackage rec {
 
   meta = with lib; {
     description = "Confluence builder for sphinx";
+    mainProgram = "sphinx-build-confluence";
     homepage = "https://github.com/sphinx-contrib/confluencebuilder";
     license = licenses.bsd1;
     maintainers = with maintainers; [ graysonhead ];

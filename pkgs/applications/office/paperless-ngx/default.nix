@@ -5,6 +5,8 @@
 , nixosTests
 , gettext
 , python3
+, giflib
+, darwin
 , ghostscript
 , imagemagickBig
 , jbig2enc
@@ -22,16 +24,32 @@
 }:
 
 let
-  version = "2.5.4";
+  version = "2.7.1";
 
   src = fetchFromGitHub {
     owner = "paperless-ngx";
     repo = "paperless-ngx";
     rev = "refs/tags/v${version}";
-    hash = "sha256-F+fZb8Eqw2gHxnv2Zj/xyUOrQu5KIGBIeyhIa1gyayw=";
+    hash = "sha256-k19dQeXuPwggTfrsxL4oesExAz4tkT/GN6lt7sLU3Nk=";
   };
 
-  python = python3;
+  # subpath installation is broken with uvicorn >= 0.26
+  # https://github.com/NixOS/nixpkgs/issues/298719
+  # https://github.com/paperless-ngx/paperless-ngx/issues/5494
+  python = python3.override {
+    packageOverrides = self: super: {
+      uvicorn = super.uvicorn.overridePythonAttrs (oldAttrs: {
+        version = "0.25.0";
+        src = fetchFromGitHub {
+          owner = "encode";
+          repo = "uvicorn";
+          rev = "0.25.0";
+          hash = "sha256-ng98DTw49zyFjrPnEwfnPfONyjKKZYuLl0qduxSppYk=";
+        };
+      });
+    };
+  };
+
 
   path = lib.makeBinPath [
     ghostscript
@@ -53,7 +71,7 @@ let
       cd src-ui
     '';
 
-    npmDepsHash = "sha256-GXGYfyWy6g1XWKyu3jdbszYYhEk1TzjQIwMGT8Rc0a0=";
+    npmDepsHash = "sha256-MJ5pnQChghZBfVN6Lbz6VcMtbe8QadiFLTsMF5TlebQ=";
 
     nativeBuildInputs = [
       pkg-config
@@ -64,6 +82,9 @@ let
 
     buildInputs = [
       pango
+    ] ++ lib.optionals stdenv.isDarwin [
+      giflib
+      darwin.apple_sdk.frameworks.CoreText
     ];
 
     CYPRESS_INSTALL_BINARY = "0";

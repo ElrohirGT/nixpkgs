@@ -1,24 +1,25 @@
-{ lib
-, aiofiles
-, aiohttp
-, aioresponses
-, aiounittest
-, buildPythonPackage
-, ciso8601
-, fetchFromGitHub
-, pubnub
-, pyjwt
-, pytestCheckHook
-, python-dateutil
-, pythonOlder
-, requests
-, requests-mock
-, setuptools
+{
+  lib,
+  aiofiles,
+  aiohttp,
+  aioresponses,
+  aiounittest,
+  buildPythonPackage,
+  ciso8601,
+  fetchFromGitHub,
+  pubnub,
+  pyjwt,
+  pytestCheckHook,
+  python-dateutil,
+  pythonOlder,
+  requests,
+  requests-mock,
+  setuptools,
 }:
 
 buildPythonPackage rec {
   pname = "yalexs";
-  version = "1.11.4";
+  version = "3.0.1";
   pyproject = true;
 
   disabled = pythonOlder "3.9";
@@ -27,7 +28,7 @@ buildPythonPackage rec {
     owner = "bdraco";
     repo = "yalexs";
     rev = "refs/tags/v${version}";
-    hash = "sha256-LzjkR60zelxV8N4i68M31yJJLEThUgz6+hYd6d+EHx4=";
+    hash = "sha256-+FdQQzQhKhIOEnOym2DNT9uQL2uAbfE8tUXUHIFFK2I=";
   };
 
   postPatch = ''
@@ -36,11 +37,9 @@ buildPythonPackage rec {
       --replace-fail '"vol",' ""
   '';
 
-  nativeBuildInputs = [
-    setuptools
-  ];
+  build-system = [ setuptools ];
 
-  propagatedBuildInputs = [
+  dependencies = [
     aiofiles
     aiohttp
     ciso8601
@@ -50,6 +49,9 @@ buildPythonPackage rec {
     requests
   ];
 
+  # aiounittest is not supported on 3.12
+  doCheck = pythonOlder "3.12";
+
   nativeCheckInputs = [
     aioresponses
     aiounittest
@@ -57,9 +59,7 @@ buildPythonPackage rec {
     requests-mock
   ];
 
-  pythonImportsCheck = [
-    "yalexs"
-  ];
+  pythonImportsCheck = [ "yalexs" ];
 
   meta = with lib; {
     description = "Python API for Yale Access (formerly August) Smart Lock and Doorbell";

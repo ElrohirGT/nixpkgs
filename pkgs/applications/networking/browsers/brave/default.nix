@@ -87,17 +87,18 @@ let
   enableFeatures = optionals enableVideoAcceleration [ "VaapiVideoDecoder" "VaapiVideoEncoder" ]
     ++ optional enableVulkan "Vulkan";
 
+  disableFeatures = [ "OutdatedBuildDetector" ] # disable automatic updates
     # The feature disable is needed for VAAPI to work correctly: https://github.com/brave/brave-browser/issues/20935
-  disableFeatures = optional enableVideoAcceleration "UseChromeOSDirectVideoDecoder";
+    ++ optionals enableVideoAcceleration  [ "UseChromeOSDirectVideoDecoder" ];
 in
 
 stdenv.mkDerivation rec {
   pname = "brave";
-  version = "1.63.162";
+  version = "1.64.113";
 
   src = fetchurl {
     url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser_${version}_amd64.deb";
-    hash = "sha256-kRIYdSBAjBVX3EZQv0OWifD+XIpGAqAVTcrdxGAifEI=";
+    hash = "sha256-T0uVq1yxDXNi6x9ot5bs3NRaOQ+RwBThvULS6EZ+Bdg=";
   };
 
   dontConfigure = true;
@@ -175,12 +176,12 @@ stdenv.mkDerivation rec {
       --prefix PATH : ${binpath}
       --suffix PATH : ${lib.makeBinPath [ xdg-utils coreutils ]}
       ${optionalString (enableFeatures != []) ''
-      --add-flags "--enable-features=${strings.concatStringsSep "," enableFeatures}"
+      --add-flags "--enable-features=${strings.concatStringsSep "," enableFeatures}\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+,WaylandWindowDecorations}}"
       ''}
       ${optionalString (disableFeatures != []) ''
       --add-flags "--disable-features=${strings.concatStringsSep "," disableFeatures}"
       ''}
-      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}"
+      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto}}"
       ${optionalString vulkanSupport ''
       --prefix XDG_DATA_DIRS  : "${addOpenGLRunpath.driverLink}/share"
       ''}

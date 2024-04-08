@@ -6,16 +6,16 @@
 
 buildGoModule rec {
   pname = "exportarr";
-  version = "1.6.2";
+  version = "2.0.1";
 
   src = fetchFromGitHub {
     owner = "onedr0p";
     repo = "exportarr";
     rev = "v${version}";
-    hash = "sha256-Eacu8NeAAQqztzVpBhW1UeKQU+FBEJcx5+mcaByQid8=";
+    hash = "sha256-A6G1b9hTGp35ZHsDaMAZdH0LkkEyXCWoV6e5Bo3UqI4=";
   };
 
-  vendorHash = "sha256-lizPm/3hxKt7ZxKkhbwsj1nL8bWmE90QqRGxTqMSMAw=";
+  vendorHash = "sha256-8MrS/BMSjyWbBM8jVQYDsvLLaolgbP22Vp2PRX33Kfw=";
 
   subPackages = [ "cmd/exportarr" ];
 
@@ -32,6 +32,7 @@ buildGoModule rec {
 
   meta = with lib; {
     description = "AIO Prometheus Exporter for Sonarr, Radarr or Lidarr";
+    mainProgram = "exportarr";
     homepage = "https://github.com/onedr0p/exportarr";
     changelog = "https://github.com/onedr0p/exportarr/releases/tag/${src.rev}";
     license = licenses.mit;

@@ -78,12 +78,15 @@ in
     extraNativeBuildInputs ? [],
     extraPropagatedBuildInputs ? [],
     extraCmakeFlags ? [],
-    meta ? {},
+    excludeDependencies ? [],
     ...
   } @ args: let
+    depNames = dependencies.${pname} or [];
+    filteredDepNames = builtins.filter (dep: !(builtins.elem dep excludeDependencies)) depNames;
+
     # FIXME(later): this is wrong for cross, some of these things really need to go into nativeBuildInputs,
     # but cross is currently very broken anyway, so we can figure this out later.
-    deps = map (dep: self.${dep}) (dependencies.${pname} or []);
+    deps = map (dep: self.${dep}) filteredDepNames;
 
     defaultArgs = {
       inherit version src;
@@ -102,17 +105,7 @@ in
 
       separateDebugInfo = true;
 
-      meta =
-        {
-          description = projectInfo.${pname}.description;
-          homepage = "https://invent.kde.org/${projectInfo.${pname}.repo_path}";
-          license = lib.filter (l: l != null) (map (l: licensesBySpdxId.${l}) licenseInfo.${pname});
-          maintainers = lib.teams.qt-kde.members;
-          # Platforms are currently limited to what upstream tests in CI, but can be extended if
-          # there's interest.
-          platforms = lib.platforms.linux ++ lib.platforms.freebsd;
-        }
-        // meta;
+      env.LANG = "C.UTF-8";
     };
 
     cleanArgs = builtins.removeAttrs args [
@@ -120,7 +113,19 @@ in
       "extraNativeBuildInputs"
       "extraPropagatedBuildInputs"
       "extraCmakeFlags"
+      "excludeDependencies"
       "meta"
     ];
+
+    meta = {
+      description = projectInfo.${pname}.description;
+      homepage = "https://invent.kde.org/${projectInfo.${pname}.repo_path}";
+      license = lib.filter (l: l != null) (map (l: licensesBySpdxId.${l}) licenseInfo.${pname});
+      maintainers = lib.teams.qt-kde.members;
+      # Platforms are currently limited to what upstream tests in CI, but can be extended if there's interest.
+      platforms = lib.platforms.linux ++ lib.platforms.freebsd;
+    } // (args.meta or { });
+
+    pos = builtins.unsafeGetAttrPos "pname" args;
   in
-    stdenv.mkDerivation (defaultArgs // cleanArgs)
+    stdenv.mkDerivation (defaultArgs // cleanArgs // { inherit meta pos; })

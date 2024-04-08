@@ -10,6 +10,7 @@
 , generateSplicesForMkScope
 , stdenv
 , pkgsHostTarget
+, kdePackages
 }:
 
 let
@@ -32,7 +33,19 @@ makeScopeWithSplicing' {
   accounts-qt = callPackage ../development/libraries/accounts-qt { };
   appstream-qt = callPackage ../development/libraries/appstream/qt.nix { };
 
+  drumstick = callPackage ../development/libraries/drumstick { };
+
+  fcitx5-chinese-addons = callPackage ../tools/inputmethods/fcitx5/fcitx5-chinese-addons.nix { };
+
+  fcitx5-configtool = kdePackages.callPackage ../tools/inputmethods/fcitx5/fcitx5-configtool.nix { };
+
   fcitx5-qt = callPackage ../tools/inputmethods/fcitx5/fcitx5-qt.nix { };
+
+  fcitx5-skk-qt = callPackage ../tools/inputmethods/fcitx5/fcitx5-skk.nix { enableQt = true; };
+
+  fcitx5-unikey = callPackage ../tools/inputmethods/fcitx5/fcitx5-unikey.nix { };
+
+  fcitx5-with-addons = callPackage ../tools/inputmethods/fcitx5/with-addons.nix { };
 
   kdsoap = callPackage ../development/libraries/kdsoap { };
 
@@ -66,9 +79,7 @@ makeScopeWithSplicing' {
 
   qtpbfimageplugin = callPackage ../development/libraries/qtpbfimageplugin { };
 
-  qtstyleplugin-kvantum = callPackage ../development/libraries/qtstyleplugin-kvantum {
-    qt5Kvantum = pkgs.libsForQt5.qtstyleplugin-kvantum;
-  };
+  qtstyleplugin-kvantum = kdePackages.callPackage ../development/libraries/qtstyleplugin-kvantum { };
 
   qtutilities = callPackage ../development/libraries/qtutilities { };
 
@@ -93,6 +104,8 @@ makeScopeWithSplicing' {
   # Not a library, but we do want it to be built for every qt version there
   # is, to allow users to choose the right build if needed.
   sddm = callPackage ../applications/display-managers/sddm {};
+
+  sierra-breeze-enhanced = kdePackages.callPackage ../data/themes/kwin-decorations/sierra-breeze-enhanced { };
 
   signond = callPackage ../development/libraries/signond {};
 

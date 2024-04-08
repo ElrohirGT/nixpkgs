@@ -14,14 +14,14 @@
 stdenv.mkDerivation rec {
   pname = "ripes";
   # Pulling unstable version as latest stable does not build against gcc-13.
-  version = "2.2.6-unstable-2024-01-02";
+  version = "2.2.6-unstable-2024-04-02";
 
   src = fetchFromGitHub {
     owner = "mortbopet";
     repo = "Ripes";
-    rev = "0faf41b669a93a1944707cd7d111a5e9241425fe";
+    rev = "027e678a44b7b9f3e81e5b6863b0d68af05fd69c";
     fetchSubmodules = true;
-    hash = "sha256-3+jibS1mGYBy9jmucytc7GvB1ZKRfh7aXtDty77hA3k=";
+    hash = "sha256-u6JxXCX1BMdbHTF7EBGEnXOV+eF6rgoZZcHqB/1nVjE=";
   };
 
   nativeBuildInputs = [

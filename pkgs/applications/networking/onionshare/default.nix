@@ -29,12 +29,12 @@
 }:
 
 let
-  version = "2.6.1";
+  version = "2.6.2";
   src = fetchFromGitHub {
     owner = "onionshare";
     repo = "onionshare";
     rev = "v${version}";
-    sha256 = "sha256-LR3Ao4Q8kEDwrFV+gYdMSEeYF4hDtEa1rJgvRRrJMwc=";
+    hash = "sha256-J8Hdriy8eWpHuMCI87a9a/zCR6xafM3A/Tkyom0Ktko=";
   };
   meta = with lib; {
     description = "Securely and anonymously send and receive files";
@@ -59,7 +59,6 @@ let
 
     license = licenses.gpl3Plus;
     maintainers = with maintainers; [ bbjubjub ];
-    mainProgram = "onionshare-cli";
   };
 
   # TODO: package meek https://support.torproject.org/glossary/meek/
@@ -69,7 +68,7 @@ in
 rec {
   onionshare = buildPythonApplication {
     pname = "onionshare-cli";
-    inherit version meta;
+    inherit version;
     src = "${src}/cli";
     patches = [
       # hardcode store paths of dependencies
@@ -122,11 +121,15 @@ rec {
       # to fake
       "test_receive_mode_webhook"
     ];
+
+    meta = meta // {
+      mainProgram = "onionshare-cli";
+    };
   };
 
   onionshare-gui = buildPythonApplication {
     pname = "onionshare";
-    inherit version meta;
+    inherit version;
     src = "${src}/desktop";
     patches = [
       # hardcode store paths of dependencies
@@ -155,12 +158,18 @@ rec {
       cp $src/org.onionshare.OnionShare.appdata.xml $out/share/appdata
     '';
 
+    dontWrapQtApps = true;
+
     preFixup = ''
-      wrapQtApp $out/bin/onionshare
+      makeWrapperArgs+=("''${qtWrapperArgs[@]}")
     '';
 
     doCheck = false;
 
     pythonImportsCheck = [ "onionshare" ];
+
+    meta = meta // {
+      mainProgram = "onionshare";
+    };
   };
 }
