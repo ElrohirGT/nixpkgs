@@ -1,0 +1,10 @@
+{
+  "linux": {
+    "hash": "",
+    "version": "0.7.6"
+  },
+  "darwin": {
+    "hash": "sha256-b75eQnUteQ767+crVe+gWfBf7PrrEjoNFVTx8s/jTXM=",
+    "version": "0.7.6"
+  }
+}
