@@ -14,7 +14,7 @@
 }: let
   pname = "waveterm";
   info = lib.importJSON ./info.json;
-  meta = tag-version: {
+  genMeta = tag-version: {
     changelog = "https://github.com/wavetermdev/waveterm/releases/tag/v${tag-version}";
     description = "An Open-Source, AI-Native, Terminal Built for Seamless Workflows";
     homepage = "https://github.com/wavetermdev/wavetermn";
@@ -29,7 +29,7 @@
     stdenvNoCC.mkDerivation (
       finalAttrs: {
         inherit pname version;
-        meta = meta version;
+        meta = genMeta version;
 
         src = fetchurl {
           inherit (info.darwin) hash;
@@ -64,7 +64,6 @@
 
   linux = let
     version = info.linux.version;
-    meta = meta version;
     src = fetchFromGitHub {
       owner = "wavetermdev";
       repo = pname;
@@ -97,7 +96,8 @@
     electron = electron-bin;
   in
     mkYarnPackage rec {
-      inherit pname src version meta;
+      inherit pname src version;
+      meta = genMeta version;
 
       packageJSON = "${src}/package.json";
 
